@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import splitfolders
 import requests
 
 
@@ -54,7 +54,9 @@ def sortcards():
 
     return id_and_frametype
 
+def splitcards():
+    path = "C:/Users/Robyn/Desktop/Research Project/sorted_cards"
+    splitfolders.ratio(path, output="cards_split", ratio=(0.6, 0.2, 0.2))
 
 
-sortcards()
-#print(sortcards())
+splitcards()
