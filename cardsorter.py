@@ -1,4 +1,6 @@
 import os
+import shutil
+
 import requests
 
 
@@ -20,21 +22,15 @@ def sortcards():
     cards_with_extention = os.listdir(path)
     cards = [os.path.splitext(card)[0] for card in cards_with_extention]
 
-    monsters = ['normal','effect','ritual','fusion','synchro','xyz','link']
-    if os.path.exists('monsters') != True:
-        os.mkdir('monsters')
+    card_types = ['normal','effect','ritual','fusion','synchro','xyz','link','spell','trap']
 
-    pendulum = ['normal_pendulum','effect_pendulum','ritual_pendulum','fusion_pendulum','synchro_pendulum','xyz_pendulum']
-    if os.path.exists('pendulum') != True:
-        os.mkdir('pendulum')
+    for card_type in card_types:
+        if os.path.exists(card_type) != True:
+            os.mkdir(card_type)
 
-    spell = ['spell']
-    if os.path.exists('spell') != True:
-        os.mkdir('spell')
+    if os.path.exists('misc') != True:
+        os.mkdir('misc')
 
-    trap = ['trap']
-    if os.path.exists('trap') != True:
-        os.mkdir('trap')
 
     counter = 0
 
@@ -44,40 +40,17 @@ def sortcards():
         print('current card: ', current_card)
 
         for card in cards:
-            path_name = card + '.jpg'
+            path_name = card + ".jpg"
             if card == current_card:
                 print("Match!")
                 counter = counter + 1
                 print(counter, " Cards Matched")
 
-                for card_type in monsters:
-                    if card_type == current_type:
-                        os.replace("%path/%path_name", "monsters/%pathname")
+                if current_type in card_types:
+                    shutil.copyfile(f"{path}/{path_name}", f"{current_type}/{path_name}")
 
-                for card_type in pendulum:
-                    if card_type == current_type:
-                        os.replace("%path/%path_name", "pendulum/%pathname")
-
-                for card_type in spell:
-                    if card_type == current_type:
-                        os.replace("%path/%path_name", "spell/%pathname")
-
-                for card_type in trap:
-                    if card_type == current_type:
-                        os.replace("%path/%path_name", "trap/%pathname")
-
-
-
-
-
-
-
-
-
-
-
-
-
+                else:
+                    shutil.copyfile(f"{path}/{path_name}", f"misc/{path_name}")
 
     return id_and_frametype
 
