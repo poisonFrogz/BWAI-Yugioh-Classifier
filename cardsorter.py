@@ -2,6 +2,7 @@ import os
 import shutil
 import splitfolders
 import requests
+import cv2
 
 
 def getcarddata():
@@ -55,8 +56,25 @@ def sortcards():
     return id_and_frametype
 
 def splitcards():
-    path = "C:/Users/Robyn/Desktop/Research Project/sorted_cards"
-    splitfolders.ratio(path, output="cards_split", ratio=(0.6, 0.2, 0.2))
+    path = "C:/Users/Robyn/Desktop/Research Project/cards_rotated"
+    splitfolders.ratio(path, output="rotated_dataset", ratio=(0.8, 0.2))
+
+def rotate_cards():
+    path_left = 'C:/Users/Robyn/Desktop/Research Project/cards_orientation/left'
+    cards_left = os.listdir(path_left)
+
+    path_right = 'C:/Users/Robyn/Desktop/Research Project/cards_orientation/right'
+    cards_right = os.listdir(path_right)
+
+    for card in cards_left:
+        to_rotate = cv2.imread(f"{path_left}/{card}")
+        rotated = cv2.rotate(to_rotate, cv2.ROTATE_90_CLOCKWISE)
+        cv2.imwrite(f"C:/Users/Robyn/Desktop/Research Project/cards_rotated/left/{card}", rotated)
+
+    for card in cards_right:
+        to_rotate = cv2.imread(f"{path_right}/{card}")
+        rotated = cv2.rotate(to_rotate, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        cv2.imwrite(f"C:/Users/Robyn/Desktop/Research Project/cards_rotated/right/{card}", rotated)
 
 
 splitcards()
