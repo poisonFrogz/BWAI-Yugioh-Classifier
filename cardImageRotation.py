@@ -3,9 +3,6 @@ import cv2
 import torch
 import cnnmodel
 import datasets_orientation as datasets
-import pytesseract
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def card_prediction(card):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -30,7 +27,6 @@ def card_prediction(card):
 def card_rotation(card):
     orientation = card_prediction(card)
     original_card = cv2.imread(card)
-    path = 'C:/Users/Robyn/Desktop/Research Project/YuGiOh board/'
     card_name = os.path.splitext(card)[0]
 
 
@@ -48,11 +44,11 @@ def card_rotation(card):
 
 
 
-card_path = 'C:/Users/Robyn/Desktop/Research Project/YuGiOh board/'
-cards = os.listdir(card_path)
-for card in cards:
-    path = f'{card_path}{card}'
-    card_rotation(path)
+#card_path = 'C:/Users/Robyn/Desktop/Research Project/YuGiOh board/'
+#cards = os.listdir(card_path)
+#for card in cards:
+    #path = f'{card_path}{card}'
+    #card_rotation(path)
 
 
 

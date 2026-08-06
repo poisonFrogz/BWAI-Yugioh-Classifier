@@ -1,28 +1,47 @@
+import os
+import easyocr
 import cv2
-import pytesseract
-from matplotlib import pyplot as plt
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
-#plt.figure(figsize=(10,10))
-#plt.imshow(image_rgb)
-#plt.title('Original Image')
-#plt.axis('off')
-#plt.show()
 
 
-extracted_text = pytesseract.image_to_string(image_rgb, config=config)
-print('extracted_text:\n')
-print(extracted_text)
+reader = easyocr.Reader(['en'], gpu=True)
 
-data = pytesseract.image_to_data(image_rgb, output_type=pytesseract.Output.DICT)
 
-n_boxes = len(data['level'])
-for i in range(n_boxes):
-    (x,y,w,h) = (data['left'][i],data['top'][i],data['width'][i],data['height'][i])
-    cv2.rectangle(image_rgb,(x,y),(x+w,y+h),(255,0,0),2)
+def extract_text(card):
+    card_path = card
+    card_to_extract = cv2.imread(card_path)
+    card_to_gray = cv2.cvtColor(card_to_extract, cv2.COLOR_BGR2GRAY)
+    card_resized = cv2.resize(card_to_gray, (1000, 1000), interpolation = cv2.INTER_CUBIC)
+    card_cropped = card_resized[78:300,:887]
+    cv2.imshow('c',card_cropped)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-plt.figure(figsize=(10,6))
-plt.imshow(image_rgb)
-plt.title('Image with Text Bounding Boxes')
-plt.axis('off')
-plt.show()
+
+    extract_info = reader.readtext(card_cropped)
+    ocr_output = []
+
+    for bbox, text, prob in extract_info:
+        if prob > 0.5:
+            ocr_output.append(text)
+
+    if ocr_output:
+        prediction = " ".join(ocr_output)
+        print(prediction)
+    else:
+        prediction = "None"
+        print(prediction)
+
+    return prediction
+
+
+
+
+
+
+
+
+all_cards = os.listdir('C:/Users/Robyn/Desktop/Research Project/rotated_cards/')
+path = 'C:/Users/Robyn/Desktop/Research Project/rotated_cards/HarpieRotated.jpg'
+for card in all_cards:
+    path = f'C:/Users/Robyn/Desktop/Research Project/rotated_cards/{card}'
+    extract_text(path)
