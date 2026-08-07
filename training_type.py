@@ -30,6 +30,8 @@ if __name__ == '__main__':
     print(next(model.parameters()).device)
     for epoch in range(num_epochs):
         start_time = time.time()
+
+        running_loss = 0.0
         # Load data batches with dataloader
         for i,(images,labels) in enumerate(train_loader):
             # Move tensors to GPU or CPU
@@ -44,11 +46,13 @@ if __name__ == '__main__':
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            running_loss += loss.item()
 
         end_time = time.time()
         mins,secs = divmod(end_time-start_time,60)
+        average_loss = running_loss / len(train_loader)
 
-        print('Epoch [{},{}], Loss: {:.4f} ¦ Time: {}m {:.2f}s'.format(epoch+1, num_epochs, loss.item(),int(mins),secs))
+        print('Epoch [{},{}], Loss: {:.4f} ¦ Time: {}m {:.2f}s'.format(epoch+1, num_epochs, average_loss,int(mins),secs))
 
-    path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/cnn_model.pth'
+    path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/card_type_model.pth'
     torch.save(model.state_dict(), path)

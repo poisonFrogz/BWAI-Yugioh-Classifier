@@ -1,13 +1,17 @@
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from torch.utils.data import DataLoader
+import cv2
+from PIL import Image
+
 batch_size = 16
 
 train_transform = transforms.Compose([
-    transforms.Resize((512,512)),
-    transforms.RandomRotation((0,180)),
+    transforms.Resize((371,256)),
+    transforms.RandomAffine(degrees=5, translate=(0.02,0.02), scale=(0.98, 1.02)),
+    transforms.ColorJitter(brightness = 0.2, contrast = 0.2),
+    transforms.RandomApply([transforms.GaussianBlur(kernel_size=3)], p=0.2),
     transforms.ToTensor(),
-    transforms.RandomErasing(p=0.6),
     transforms.Normalize(
         mean = [0.5,0.5,0.5],
         std = [0.5,0.5,0.5]
@@ -15,13 +19,23 @@ train_transform = transforms.Compose([
 ])
 
 test_transform = transforms.Compose([
-    transforms.Resize((512,512)),
+    transforms.Resize((371,256)),
     transforms.ToTensor(),
     transforms.Normalize(
         mean = [0.5,0.5,0.5],
         std = [0.5,0.5,0.5]
     )
 ])
+
+predict_transform = transforms.Compose([
+    transforms.Resize((371,256)),
+    transforms.ToTensor(),
+    transforms.Normalize(
+        mean=[0.5, 0.5, 0.5],
+        std=[0.5, 0.5, 0.5]
+    )
+])
+
 def get_train_loader ():
     train_dataset = datasets.ImageFolder(
         root = 'C:/Users/Robyn/Desktop/Research Project/cards_split/train',
@@ -33,6 +47,7 @@ def get_train_loader ():
         batch_size = batch_size,
         shuffle = True,
         num_workers = 0,
+        drop_last = True
     )
 
     return train_loader
@@ -51,5 +66,16 @@ def get_test_loader ():
     )
 
     return test_loader
+
+def get_prediction_tensor(card):
+    card_to_predict = card
+
+    card_rgb = cv2.cvtColor(card_to_predict, cv2.COLOR_BGR2RGB)
+
+    card_pil = Image.fromarray(card_rgb)
+
+    card_to_tensor = predict_transform(card_pil)
+
+    return card_to_tensor.unsqueeze(0)
 
 

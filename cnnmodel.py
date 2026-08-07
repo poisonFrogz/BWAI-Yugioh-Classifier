@@ -11,11 +11,15 @@ class CnnModel(nn.Module):
         self.conv_layer4 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1)
         self.max_pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
+        self.conv_layer5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+        self.conv_layer6 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1)
+        self.max_pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
+
         self.pool = nn.AdaptiveMaxPool2d((7,7))
 
         self.relu1 = nn.ReLU()
 
-        self.fc1 = nn.Linear(3136,128)
+        self.fc1 = nn.Linear(6272,128)
         self.fc2 = nn.Linear(128, num_classes)
 
     def forward(self,x):
@@ -26,6 +30,10 @@ class CnnModel(nn.Module):
         out = self.relu1(self.conv_layer3(out))
         out = self.relu1(self.conv_layer4(out))
         out = self.max_pool2(out)
+
+        out = self.relu1(self.conv_layer5(out))
+        out = self.relu1(self.conv_layer6(out))
+        out = self.max_pool3(out)
 
         out = self.pool(out)
         out = out.reshape(out.size(0), -1)

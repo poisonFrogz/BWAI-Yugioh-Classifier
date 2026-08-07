@@ -32,16 +32,3 @@ def extract_text(card):
         print(prediction)
 
     return prediction
-
-
-
-
-
-
-
-
-all_cards = os.listdir('C:/Users/Robyn/Desktop/Research Project/rotated_cards/')
-path = 'C:/Users/Robyn/Desktop/Research Project/rotated_cards/HarpieRotated.jpg'
-for card in all_cards:
-    path = f'C:/Users/Robyn/Desktop/Research Project/rotated_cards/{card}'
-    extract_text(path)
