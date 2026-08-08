@@ -16,7 +16,7 @@ def is_filled(card_bgr, x,y,w,h, white_threshold=110, max_white_ratio=0.80):
         return "filled"
 
 
-def crop_save_cards (board_state, cards_output, min_area=25000, max_area=200000):
+def crop_save_cards (board_state, cards_output, saved_cards, min_area=25000, max_area=200000):
     # Load Board, turn it gray
     board_bgr = cv2.imread(board_state)
     board_gray = cv2.cvtColor(board_bgr, cv2.COLOR_BGR2GRAY)
@@ -26,7 +26,7 @@ def crop_save_cards (board_state, cards_output, min_area=25000, max_area=200000)
     contours, hierarchy = cv2.findContours(card_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     found_cards = []
-    saved_cards = 0
+
 
     for contour in contours:
         area = cv2.contourArea(contour)
@@ -64,7 +64,3 @@ def crop_save_cards (board_state, cards_output, min_area=25000, max_area=200000)
     print(f'Cards extracted, {saved_cards} saved to {cards_output}')
     return found_cards
 
-board_image_path = 'C:/Users/Robyn/Desktop/Research Project/board_states/board_state_1.jpg'
-output_folder = 'C:/Users/Robyn/Desktop/Research Project/cropped_cards'
-
-crop_save_cards(board_image_path, output_folder)

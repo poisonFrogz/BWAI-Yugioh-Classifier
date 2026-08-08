@@ -66,7 +66,7 @@ def get_test_loader():
     return test_loader
 
 def get_prediction_tensor(card):
-    card = cv2.imread(card)
+   
 
     card_rgb = cv2.cvtColor(card, cv2.COLOR_BGR2RGB)
 
