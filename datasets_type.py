@@ -7,32 +7,35 @@ from PIL import Image
 batch_size = 16
 
 train_transform = transforms.Compose([
+    transforms.Pad(padding=20, fill=(255,255,255), padding_mode='constant'),
     transforms.Resize((371,256)),
     transforms.RandomAffine(degrees=5, translate=(0.02,0.02), scale=(0.98, 1.02)),
     transforms.ColorJitter(brightness = 0.2, contrast = 0.2),
     transforms.RandomApply([transforms.GaussianBlur(kernel_size=3)], p=0.2),
     transforms.ToTensor(),
     transforms.Normalize(
-        mean = [0.5,0.5,0.5],
-        std = [0.5,0.5,0.5]
+        mean = [0.485,0.456,0.406],
+        std = [0.229,0.224,0.225]
     )
 ])
 
 test_transform = transforms.Compose([
+    transforms.Pad(padding=20, fill=(255,255,255), padding_mode='constant'),
     transforms.Resize((371,256)),
     transforms.ToTensor(),
     transforms.Normalize(
-        mean = [0.5,0.5,0.5],
-        std = [0.5,0.5,0.5]
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]
     )
 ])
 
 predict_transform = transforms.Compose([
+    transforms.Pad(padding=20, fill=(255,255,255), padding_mode='constant'),
     transforms.Resize((371,256)),
     transforms.ToTensor(),
     transforms.Normalize(
-        mean=[0.5, 0.5, 0.5],
-        std=[0.5, 0.5, 0.5]
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225]
     )
 ])
 

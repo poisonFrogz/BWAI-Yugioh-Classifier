@@ -1,10 +1,12 @@
 import torch
-import cnnmodel
+
+import orientation_model
+import resnet_model
 import datasets_orientation as datasets
 
 num_classes = 2
 if __name__ == '__main__':
-    model = cnnmodel.CnnModel(num_classes)
+    model = orientation_model.CnnModel(num_classes)
     test_loader = datasets.get_test_loader()
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
