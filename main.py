@@ -13,7 +13,7 @@ card_types = ['effect','fusion','link','normal','ritual','spell','synchro','trap
 
 om_path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/orientation_model.pth'
 rm_path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/card_type_model.pth'
-board_state_path = 'C:/Users/Robyn/Desktop/Research Project/board_states/board_state_5.jpg'
+board_state_path = 'C:/Users/Robyn/Desktop/Research Project/board_states/'
 board_state_output = 'C:/Users/Robyn/Desktop/Research Project/cropped_cards/'
 cards_to_predict = 'C:/Users/Robyn/Desktop/Research Project/auto_rotate_cards/'
 
@@ -30,9 +30,19 @@ rm.load_state_dict(torch.load(rm_path))
 rm = rm.to(device)
 rm.eval()
 
-saved_cards = 20
+saved_cards = 0
+board_states = os.listdir(board_state_path)
+for state in board_states:
+    boards_to_crop = os.path.join(board_state_path, state)
+    saved_cards = crop_card.crop_board(boards_to_crop,saved_cards,board_state_output)
+    saved_cards = saved_cards
 
-crop_card.crop_save_cards(board_state_path, board_state_output, saved_cards)
+
+cards_to_rotate = os.listdir(board_state_output)
+for card in cards_to_rotate:
+    rotate_path = os.path.join(board_state_output,card)
+    cir.card_rotation(rotate_path,device,om,cards_to_predict)
+
 
 
 

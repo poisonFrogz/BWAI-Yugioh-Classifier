@@ -1,66 +1,30 @@
 import cv2
-import os
-import numpy as np
 
-def is_filled(card_bgr, x,y,w,h, white_threshold=110, max_white_ratio=0.80):
-    box_crop = card_bgr[y:y+h, x:x+w]
-    gray_crop = cv2.cvtColor(box_crop, cv2.COLOR_BGR2GRAY)
+def crop_board(board_path,count,output_path):
+    #load board state from path
+    board_state = cv2.imread(board_path)
 
-    total_pixels = gray_crop.size
-    white_pixels = np.sum(gray_crop > white_threshold)
-    white_ratio = white_pixels / total_pixels
+    #transform image to grayscale
+    board_state_gray = cv2.cvtColor(board_state, cv2.COLOR_BGR2GRAY)
 
-    if white_ratio > max_white_ratio:
-        return "empty"
-    else:
-        return "filled"
+    #binarize image where background black and foreground white
+    _, thresh = cv2.threshold(board_state_gray, 110, 225, cv2.THRESH_BINARY_INV)
 
+    #find contours in image
+    edge = cv2.Canny(thresh, 30,200)
 
-def crop_save_cards (board_state, cards_output, saved_cards, min_area=25000, max_area=200000):
-    # Load Board, turn it gray
-    board_bgr = cv2.imread(board_state)
-    board_gray = cv2.cvtColor(board_bgr, cv2.COLOR_BGR2GRAY)
+    contours, hierarchy = cv2.findContours(edge,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 
-    #Threshold to make cards noticeable for contouring
-    _, card_threshold = cv2.threshold(board_gray, 170, 255, cv2.THRESH_BINARY_INV)
-    contours, hierarchy = cv2.findContours(card_threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        #draw bounding box around original board image
+    for c in contours:
+        rect = cv2.boundingRect(c)
+        if rect[2] < 100 or rect[3] < 100: continue
+        x,y,w,h = rect
+        #cv2.rectangle(board_state,(x,y),(x+w,y+h),(0,255,0),2)
+        # save card image to output path
+        roi = board_state[y:y+h,x:x+w]
+        cv2.imwrite(f'{output_path}cropped_card_{count}.jpg', roi)#save image
+        count = count + 1
 
-    found_cards = []
-
-
-    for contour in contours:
-        area = cv2.contourArea(contour)
-        if min_area < area < max_area:
-            x,y,w,h = cv2.boundingRect(contour)
-
-            aspect_ratio = float(w) / h
-
-            is_portrait = (0.5 <= aspect_ratio <= 0.85)
-            is_landscape = (1.15 <= aspect_ratio <= 2.0)
-
-            if not (is_portrait or is_landscape):
-                print("Ignored non card")
-                continue
-
-            status = is_filled(board_bgr, x,y,w,h)
-
-            if status == 'filled':
-                cropped_card = board_bgr[y:y + h, x:x + w]
-                found_cards.append(cropped_card)
-
-                filename = f'cropped_card_{saved_cards}.jpg'
-                save_path = os.path.join(cards_output, filename)
-                cv2.imwrite(save_path, cropped_card)
-
-                print(f'{filename} saved to {cards_output}')
-                saved_cards += 1
-
-            else:
-                print(f'Empty Zone')
-
-        else:
-            pass
-
-    print(f'Cards extracted, {saved_cards} saved to {cards_output}')
-    return found_cards
+    return count
 
