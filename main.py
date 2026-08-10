@@ -1,9 +1,10 @@
+import card_type_prediction
 import orientation_model
 import resnet_model
 import crop_card
 import cardImageRotation as cir
 import card_type_prediction as ctp
-#import cardTextExtraction as cte
+import cardTextExtraction as cte
 import torch
 import easyocr
 import os
@@ -15,7 +16,7 @@ om_path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/orientation_model
 rm_path = 'C:/Users/Robyn/Desktop/Research Project/Saved Model/card_type_model.pth'
 board_state_path = 'C:/Users/Robyn/Desktop/Research Project/board_states/'
 board_state_output = 'C:/Users/Robyn/Desktop/Research Project/cropped_cards/'
-cards_to_predict = 'C:/Users/Robyn/Desktop/Research Project/auto_rotate_cards/'
+cards_processed = 'C:/Users/Robyn/Desktop/Research Project/auto_rotate_cards/'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 om = orientation_model.CnnModel(num_classes=2)
@@ -32,16 +33,25 @@ rm.eval()
 
 saved_cards = 0
 board_states = os.listdir(board_state_path)
-for state in board_states:
-    boards_to_crop = os.path.join(board_state_path, state)
-    saved_cards = crop_card.crop_board(boards_to_crop,saved_cards,board_state_output)
-    saved_cards = saved_cards
+#for state in board_states:
+    #boards_to_crop = os.path.join(board_state_path, state)
+    #saved_cards = crop_card.crop_board(boards_to_crop,saved_cards,board_state_output)
+    #saved_cards = saved_cards
 
 
-cards_to_rotate = os.listdir(board_state_output)
-for card in cards_to_rotate:
-    rotate_path = os.path.join(board_state_output,card)
-    cir.card_rotation(rotate_path,device,om,cards_to_predict)
+#cards_to_rotate = os.listdir(board_state_output)
+#for card in cards_to_rotate:
+    #rotate_path = os.path.join(board_state_output,card)
+    #cir.card_rotation(rotate_path,device,om,cards_processed)
+
+
+cards_to_predict = os.listdir(cards_processed)
+for card in cards_to_predict:
+    card_prediction = os.path.join(cards_processed,card)
+    frame_type = ctp.predict_type(card_prediction,rm,device,card_types)
+    card_text = cte.extract_text(card_prediction,reader)
+    print(f'Card: {card}\n Frame Type: {frame_type}\n Card Text: {card_text}')
+
 
 
 

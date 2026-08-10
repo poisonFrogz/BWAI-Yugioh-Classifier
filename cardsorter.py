@@ -77,4 +77,23 @@ def rotate_cards():
         cv2.imwrite(f"C:/Users/Robyn/Desktop/Research Project/cards_rotated/right/{card}", rotated)
 
 
-splitcards()
+def get_name():
+    frame_types = ['normal','effect','ritual','fusion','synchro','xyz','link','spell','trap']
+    path = 'C:/Users/Robyn/Desktop/Research Project/card_types/'
+    for ftype in frame_types:
+        url = f"https://db.ygoprodeck.com/api/v7/cardinfo.php?"
+        frame_type = []
+        apiresponse = requests.get(url)
+        card_data = apiresponse.json().get('data')
+        for card in card_data:
+            if card.get('frameType') == ftype:
+                frame_type.append(card.get('name'))
+
+        with open(f'{path}{ftype}.txt', 'w+', encoding='utf-8') as f:
+
+            for item in frame_type:
+                f.write(item + '\n')
+
+        f.close()
+
+get_name()
