@@ -1,6 +1,8 @@
 import cv2
+import os
 
 def crop_board(board_path,count,output_path):
+    current_board_cards = []
     #load board state from path
     board_state = cv2.imread(board_path)
 
@@ -26,14 +28,23 @@ def crop_board(board_path,count,output_path):
         #cv2.rectangle(board_state,(x,y),(x+w,y+h),(0,255,0),2)
         # save card image to output path
         roi = board_state[y:y+h,x:x+w]
-        cv2.imwrite(f'{output_path}cropped_card_{count}.jpg', roi)#save image
+
+        filename = f'cropped_card_{count}.jpg'
+        full_output_path = f'{output_path}{filename}'
+
+        cv2.imwrite(full_output_path, roi)#save image
+
+        current_board_cards.append(filename)
+
         count = count + 1
 
-    return count
+    return count, current_board_cards
 
-def draw_boxes(board_path, text, output_path=0):
+def draw_boxes(board_path, text, output_path):
     # load board state from path
     board_state = cv2.imread(board_path)
+    o = cv2.resize(board_state, (800, 600))
+    cv2.imshow("Original", o)
 
     # transform image to grayscale
     board_state_gray = cv2.cvtColor(board_state, cv2.COLOR_BGR2GRAY)
@@ -55,6 +66,11 @@ def draw_boxes(board_path, text, output_path=0):
         card = cv2.rectangle(board_state,(x,y),(x+w,y+h),(0,255,0),2)
         cv2.putText(card, text[count],(x,y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
         count = count + 1
+    base_name = os.path.basename(board_path)
+
+    save_path = os.path.join(output_path, f'annotated_{base_name}')
+    cv2.imwrite(save_path, board_state)
+
     c = cv2.resize(board_state, (800, 600))
     cv2.imshow("Annotated", c)
     cv2.waitKey(0)

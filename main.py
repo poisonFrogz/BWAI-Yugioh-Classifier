@@ -1,4 +1,4 @@
-import card_type_prediction
+
 import orientation_model
 import resnet_model
 import crop_card as cc
@@ -37,6 +37,7 @@ rm.eval()
 
 saved_cards = 0
 board_states = os.listdir(board_state_path)
+
 # for each state in board_states
 for state in board_states:
     frame_types = []
@@ -44,32 +45,30 @@ for state in board_states:
     formatted_text = []
     # crop the board into cards
     boards_to_crop = os.path.join(board_state_path, state)
-    saved_cards = cc.crop_board(boards_to_crop, saved_cards, board_state_output)
-    saved_cards = saved_cards
+    saved_cards, current_board_cards = cc.crop_board(boards_to_crop, saved_cards, board_state_output)
+
+
 
     # rotate the cards
-    cards_to_rotate = os.listdir(board_state_output)
-    for card in cards_to_rotate:
+    current_processed_cards = []
+    for card in current_board_cards:
         rotate_path = os.path.join(board_state_output, card)
-        cir.card_rotation(rotate_path, device, om, cards_processed)
+
+        processed_path = cir.card_rotation(rotate_path, device, om, cards_processed)
+
+        current_processed_cards.append(processed_path)
 
     # predict the card types
-    cards_to_predict = os.listdir(cards_processed)
-    print(cards_to_predict)
-    for card in cards_to_predict:
-        card_prediction = os.path.join(cards_processed, card)
-        frame_type = ctp.predict_type(card_prediction, rm, device, card_types)
 
-        # store the card type in a list
+    print(current_processed_cards)
+    for card_prediction in current_processed_cards:
+        frame_type = ctp.predict_type(card_prediction, rm, device, card_types)
         frame_types.append(frame_type)
     print(frame_types)
 
     # predict card text
-    for card in cards_to_predict:
-        card_prediction = os.path.join(cards_processed, card)
+    for card_prediction in current_processed_cards:
         card_text = cte.extract_text(card_prediction, reader)
-
-        #store card text in a list
         cards_text.append(card_text)
     print(cards_text)
 
@@ -77,14 +76,12 @@ for state in board_states:
     for text, card_type in zip(cards_text, frame_types):
 
         clean_text = sm.find_string(card_text_path, text, card_type)
-
         # store reformatted text in a list
         formatted_text.append(clean_text)
     print(formatted_text)
-
-
     # draw bounding boxes around cards on board, put card name on top
-    cc.draw_boxes(boards_to_crop, formatted_text)
+    cc.draw_boxes(boards_to_crop, formatted_text, annotated_boards)
+
 
 
 
