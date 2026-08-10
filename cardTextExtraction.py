@@ -11,11 +11,6 @@ def extract_text(card, reader):
     card_cropped = card_resized[:300,:]
     card_gaussian = cv2.GaussianBlur(card_cropped, (5,5), 0)
 
-
-    cv2.imshow("Card", card_cropped)
-    cv2.waitKey(0)
-
-
     extract_info = reader.readtext(card_cropped)
     ocr_output = []
 
