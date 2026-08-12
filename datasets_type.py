@@ -30,7 +30,7 @@ test_transform = transforms.Compose([
 ])
 
 predict_transform = transforms.Compose([
-    transforms.Pad(padding=20, fill=(255,255,255), padding_mode='constant'),
+    #transforms.Pad(padding=20, fill=(255,255,255), padding_mode='constant'),
     transforms.Resize((371,256)),
     transforms.ToTensor(),
     transforms.Normalize(
@@ -71,7 +71,7 @@ def get_test_loader ():
     return test_loader
 
 def get_prediction_tensor(card):
-    card_to_predict = card
+    card_to_predict = cv2.imread(card)
 
     card_rgb = cv2.cvtColor(card_to_predict, cv2.COLOR_BGR2RGB)
 

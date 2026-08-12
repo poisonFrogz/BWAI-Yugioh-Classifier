@@ -34,7 +34,7 @@ def card_rotation(card, device, model, output_path):
         rotated = cv2.rotate(original_card,cv2.ROTATE_90_CLOCKWISE)
         cv2.imwrite(save_path, rotated)
 
-
+    return save_path
 
 
 
