@@ -43,9 +43,7 @@ def sortcards():
         for card in cards:
             path_name = card + ".jpg"
             if card == current_card:
-                print("Match!")
                 counter = counter + 1
-                print(counter, " Cards Matched")
 
                 if current_type in card_types:
                     shutil.copyfile(f"{path}/{path_name}", f"{current_type}/{path_name}")

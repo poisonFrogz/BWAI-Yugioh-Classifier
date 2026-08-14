@@ -17,15 +17,10 @@ def crop_board(board_path,count,output_path):
 
     contours, hierarchy = cv2.findContours(edge,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
 
-
-
-
-        #draw bounding box around original board image
     for c in contours:
         rect = cv2.boundingRect(c)
         if rect[2] < 100 or rect[3] < 100: continue
         x,y,w,h = rect
-        #cv2.rectangle(board_state,(x,y),(x+w,y+h),(0,255,0),2)
         # save card image to output path
         roi = board_state[y:y+h,x:x+w]
 
@@ -44,7 +39,7 @@ def draw_boxes(board_path, text, output_path):
     # load board state from path
     board_state = cv2.imread(board_path)
     o = cv2.resize(board_state, (800, 600))
-    cv2.imshow("Original", o)
+    #cv2.imshow("Original", o)
 
     # transform image to grayscale
     board_state_gray = cv2.cvtColor(board_state, cv2.COLOR_BGR2GRAY)
@@ -72,16 +67,5 @@ def draw_boxes(board_path, text, output_path):
     cv2.imwrite(save_path, board_state)
 
     c = cv2.resize(board_state, (800, 600))
-    cv2.imshow("Annotated", c)
-    cv2.waitKey(0)
-
-
-
-
-#card_text = ['Zefra War','Token Collector','Pharaohs Treasure','Red Sprinter','Armoured Zombie',
-#             'Barricadeborg Blocker','Silvers Cry','F.A. Shining Star GT',
-#             'Draconic Tactics','Summoned Skull']
-
-#path = 'C:/Users/Robyn/Desktop/Research Project/test/test_board/board_state_1.jpg'
-
-#draw_boxes(path,card_text)
+    #cv2.imshow("Annotated", c)
+    #cv2.waitKey(0)
