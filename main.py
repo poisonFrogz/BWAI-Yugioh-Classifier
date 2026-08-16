@@ -9,8 +9,6 @@ import string_match as sm
 import torch
 import easyocr
 import os
-import cv2
-import itertools
 
 card_types = ['effect','fusion','link','normal','ritual','spell','synchro','trap','xyz']
 
