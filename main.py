@@ -9,8 +9,6 @@ import string_match as sm
 import torch
 import easyocr
 import os
-import cv2
-import itertools
 
 card_types = ['effect','fusion','link','normal','ritual','spell','synchro','trap','xyz']
 
@@ -79,8 +77,10 @@ for state in board_states:
         # store reformatted text in a list
         formatted_text.append(clean_text)
     print(formatted_text)
+    print('\n \n \n')
     # draw bounding boxes around cards on board, put card name on top
     cc.draw_boxes(boards_to_crop, formatted_text, annotated_boards)
+    
 
 
 

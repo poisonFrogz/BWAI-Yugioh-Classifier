@@ -30,7 +30,7 @@ def find_string(path,prediction,card_type):
 
     return best_match
 
-#path = 'C:/Users/Robyn/Desktop/Research Project/card_types/'
-#prediction = "SHINING STAR GT G2"
-#card_type = 'link'
+#path = 'utils/card_types/'
+#prediction = "THE WINGED DRAGON OF RA"
+#card_type = 'effect'
 #find_string(path,prediction,card_type)

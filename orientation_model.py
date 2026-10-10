@@ -1,3 +1,8 @@
+# Adapted from:
+# https://www.digitalocean.com/community/tutorials/writing-cnns-from-scratch-in-pytorch#cnn-from-scratch
+# Original Author: Nouman and Shaoni Mukherjee. Accessed on 05/08/26
+# Changes made: changed features to match my dataset, added an adaptive max pool and put all conv layers through activation function
+
 import torch.nn as nn
 
 class CnnModel(nn.Module):
